@@ -34,8 +34,7 @@ set_display_resolution() {
     return
   fi
 
-  mkdir -p "${xorg_conf_d}"
-  cat > "${xorg_conf_d}/10-resolution.conf" << EOF
+  sudo tee "${xorg_conf_d}/10-resolution.conf" > /dev/null << EOF
   Section "Device"
     Identifier  "Card0"
     Driver      "modesetting"
