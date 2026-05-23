@@ -19,6 +19,7 @@ main() {
   set_display_resolution 1920 1080
   set_keymap "hr"
   set_theme "Kali-Green-Dark"
+  set_icons "Flat-Remix-Green-Dark"
 
   install_font
   install_nvim
@@ -99,6 +100,16 @@ set_theme() {
   xfconf-query -c xsettings -p /Net/ThemeName -s "${theme}"
 
   log_info "Set theme ${theme}"
+}
+
+set_icons() {
+  local icons=$1
+
+  log_info "Setting icons ${icons}..."
+  xfconf-query -c xsettings -p /Net/IconThemeName -s "${icons}"
+
+  log_info "Set icons ${icons}"
+
 }
 
 install_font() {
