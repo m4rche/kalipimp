@@ -138,6 +138,9 @@ install_kitty() {
   log_info "Creating symlink /usr/bin/kitten..."
   sudo ln -sf "${HOME}/.local/kitty.app/bin/kitten" /usr/bin/kitten
 
+  log_info "Registering kitty as terminal alternative..."
+  sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/kitty 30
+
   log_info "Setting kitty as default terminal..."
   sudo update-alternatives --set x-terminal-emulator /usr/bin/kitty
 
