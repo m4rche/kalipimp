@@ -18,8 +18,9 @@ main() {
 
   set_display_resolution 1920 1080
   set_keymap "hr"
+  set_theme "Kali-Green-Dark"
 
-  install_font "Gohu"
+  install_font
   install_nvim
   install_kitty
 }
@@ -89,6 +90,15 @@ keymap_exists() {
   local keymap=$1
 
   awk -v k="${keymap}" '$1 == k {found=1} END {exit !found}' /usr/share/X11/xkb/rules/xorg.lst
+}
+
+set_theme() {
+  local theme=$1
+
+  log_info "Setting theme ${theme}..."
+  xfconf-query -c xsettings -p /Net/ThemeName -s "${theme}"
+
+  log_info "Set theme ${theme}"
 }
 
 install_font() {
