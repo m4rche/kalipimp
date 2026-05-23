@@ -7,7 +7,7 @@ readonly YELLOW=$(tput setaf 3)
 readonly BLUE=$(tput setaf 4)
 
 readonly TMP_D="$(mktemp -d)"
-trap "rm -rf '${TMP}'" EXIT
+trap "rm -rf '${TMP_D}'" EXIT
 
 log_info()  { echo -e "[$(date '+%H:%M:%S')] ${GREEN}[INFO]${NC} $*"; }
 log_warn()  { echo -e "[$(date '+%H:%M:%S')] ${YELLOW}[WARN]${NC} $*"; }
@@ -21,6 +21,7 @@ main() {
   set_display_resolution 1920 1080
   set_keymap "hr"
 
+  install_font "Gohu" 11
   install_nvim
   install_kitty
 }
@@ -92,8 +93,35 @@ keymap_exists() {
   awk -v k="${keymap}" '$1 == k {found=1} END {exit !found}' /usr/share/X11/xkb/rules/xorg.lst
 }
 
+install_font() {
+  local font=$1
+  local size=$2
+
+  local artifact="${font}.zip"
+  local version="v3.4.0"
+  local url="https://github.com/ryanoasis/nerd-fonts/releases/download/${version}/${artifact}"
+  local fonts_d="${HOME}/.local/share/fonts"
+
+  mkdir -p "${fonts_d}"
+
+  log_info "Downloading ${font} font..."
+  if ! curl -fLo "${TMP_D}/${artifact}" "${url}"; then
+    log_warn "Download failed"
+    return
+  fi
+ 
+  log_info "Extracting to ${fonts_d}..."
+  if ! unzip -d "${fonts_d}" "${TMP_D}/${artifact}"; then
+    log_warn "Extraction failed"
+    return
+  fi
+
+  log_info "Refreshing font cache..."
+  fc-cache -f
+}
+
 install_nvim() {
-  local artifact="nvim-linux-x86_64"
+  local artifact="nvim-linux-x85_64"
   local tarball="${artifact}.tar.gz"
   local url="https://github.com/neovim/neovim/releases/latest/download/${tarball}"
 
