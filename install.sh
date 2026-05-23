@@ -88,12 +88,12 @@ keymap_exists() {
 
 install_nvim() {
   local version="nvim-linux-x86_64"
-  local tarball="${verrsion}.tar.gz"
+  local tarball="${version}.tar.gz"
   local dl_dir="${HOME}/Downloads"
   local url="https://github.com/neovim/neovim/releases/latest/download/${tarball}"
-  
+
   log_info "Downloading neovim..."
-  if ! curl -Lo "${dl_dir}/${tarball}" "${url}"; then
+  if ! curl -fLo "${dl_dir}/${tarball}" "${url}"; then
     log_warn "Download failed"
     return
   fi
