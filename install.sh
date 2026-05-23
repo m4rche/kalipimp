@@ -143,6 +143,7 @@ install_kitty() {
 
   log_info "Setting kitty as default terminal..."
   sudo update-alternatives --set x-terminal-emulator /usr/bin/kitty
+  sudo sed -i 's/^TerminalEmulator=.*/TerminalEmulator=kitty/' /etc/xdg/xfce4/helpers.rc
 
   log_info "Kitty installed successfully"
 }
