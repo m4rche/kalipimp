@@ -109,7 +109,7 @@ install_font() {
   fi
  
   log_info "Extracting to ${fonts_d}..."
-  if ! unzip -d "${fonts_d}" "${TMP_D}/${artifact}"; then
+  if ! unzip -o -d "${fonts_d}" "${TMP_D}/${artifact}"; then
     log_warn "Extraction failed"
     return
   fi
