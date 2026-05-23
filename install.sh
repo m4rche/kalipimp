@@ -121,7 +121,7 @@ install_kitty() {
   local url="https://sw.kovidgoyal.net/kitty/installer.sh"
 
   log_info "Downloading kitty installer..."
-  if ! curl -fLo "${TMP_D}/installer.sh" "${url}"; then
+  if ! curl -fLo "${TMP_D}/${installer}" "${url}"; then
     log_warn "Download failed"
     return
   fi
