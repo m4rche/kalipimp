@@ -19,7 +19,7 @@ main() {
   set_display_resolution 1920 1080
   set_keymap "hr"
 
-  install_font "Gohu" 11
+  install_font "Gohu"
   install_nvim
   install_kitty
 }
@@ -92,9 +92,7 @@ keymap_exists() {
 }
 
 install_font() {
-  local font=$1
-  local size=$2
-
+  local font="Gohu"
   local artifact="${font}.zip"
   local version="v3.4.0"
   local url="https://github.com/ryanoasis/nerd-fonts/releases/download/${version}/${artifact}"
@@ -116,6 +114,12 @@ install_font() {
 
   log_info "Refreshing font cache..."
   fc-cache -f
+  
+  log_info "Setting ${font} as default font..."
+  xfconf-query -c xsettings -p /Gtk/FontName -s "GohuFont 11 Nerd Font Medium 11"
+  xfconf-query -c xsettings -p /Gtk/FontName -s "GohuFont 11 Nerd Font Mono Medium 10"
+
+  log_info "${font} font installed successfully"
 }
 
 install_nvim() {
