@@ -6,6 +6,9 @@ readonly GREEN=$(tput setaf 2)
 readonly YELLOW=$(tput setaf 3)
 readonly BLUE=$(tput setaf 4)
 
+readonly TMP_D="$(mktemp -d)"
+trap "rm -rf '${TMP}'" EXIT
+
 log_info()  { echo -e "[$(date '+%H:%M:%S')] ${GREEN}[INFO]${NC} $*"; }
 log_warn()  { echo -e "[$(date '+%H:%M:%S')] ${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "[$(date '+%H:%M:%S')] ${RED}[ERROR]${NC} $*"; }
@@ -13,10 +16,13 @@ log_error() { echo -e "[$(date '+%H:%M:%S')] ${RED}[ERROR]${NC} $*"; }
 main() {
   sudo -v 
 
+  mkdir -p "${TMP_D}"
+
   set_display_resolution 1920 1080
   set_keymap "hr"
 
   install_nvim
+  install_kitty
 }
 
 set_display_resolution() {
@@ -87,31 +93,52 @@ keymap_exists() {
 }
 
 install_nvim() {
-  local version="nvim-linux-x86_64"
-  local tarball="${version}.tar.gz"
-  local dl_dir="${HOME}/Downloads"
+  local artifact="nvim-linux-x86_64"
+  local tarball="${artifact}.tar.gz"
   local url="https://github.com/neovim/neovim/releases/latest/download/${tarball}"
 
   log_info "Downloading neovim..."
-  if ! curl -fLo "${dl_dir}/${tarball}" "${url}"; then
+  if ! curl -fLo "${TMP_D}/${tarball}" "${url}"; then
     log_warn "Download failed"
     return
   fi
 
-  log_info "Extracting to /opt/${version}..."
-  sudo rm -rf "/opt/${version}"
-  if ! sudo tar -C /opt -xzf "${dl_dir}/${tarball}"; then
+  log_info "Extracting to /opt/${artifact}..."
+  sudo rm -rf "/opt/${artifact}"
+  if ! sudo tar -C /opt -xzf "${TMP_D}/${tarball}"; then
     log_warn "Extraction failed"
     return
   fi
 
   log_info "Creating symlink /usr/bin/nvim..."
-  sudo ln -sf "/opt/${version}/bin/nvim" /usr/bin/nvim
-
-  log_info "Cleaning up tarball..."
-  rm "${dl_dir}/${tarball}"
+  sudo ln -sf "/opt/${artifact}/bin/nvim" /usr/bin/nvim
 
   log_info "Neovim installed successfully"
+}
+
+install_kitty() {
+  local installer="kitty-installer.sh"
+  local url="https://sw.kovidgoyal.net/kitty/installer.sh"
+
+  log_info "Downloading kitty installer..."
+  if ! curl -fLo "${TMP_D}/installer.sh" "${url}" then
+    log_warn "Download failed"
+    return
+  fi
+
+  log_info "Running kitty installer..."
+  if ! sh "${TMP_D}/${installer}"; then
+    log_warn "Installation failed"
+    return
+  fi
+
+  log_info "Creating symlink /usr/bin/kitty..."
+  sudo ln -sf "${HOME}/.local/kitty.app/bin/kitty" /usr/bin/kitty
+
+  log_info "Creating symlink /usr/bin/kitten..."
+  sudo ln -sf "${HOME}/.local/kitty.app/bin/kitten" /usr/bin/kitten
+
+  log_info "Kitty installed successfully"
 }
 
 main "$@"
