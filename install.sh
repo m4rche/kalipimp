@@ -16,8 +16,6 @@ log_error() { echo -e "[$(date '+%H:%M:%S')] ${RED}[ERROR]${NC} $*"; }
 main() {
   sudo -v 
 
-  mkdir -p "${TMP_D}"
-
   set_display_resolution 1920 1080
   set_keymap "hr"
 
@@ -121,7 +119,7 @@ install_font() {
 }
 
 install_nvim() {
-  local artifact="nvim-linux-x85_64"
+  local artifact="nvim-linux-x86_64"
   local tarball="${artifact}.tar.gz"
   local url="https://github.com/neovim/neovim/releases/latest/download/${tarball}"
 
