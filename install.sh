@@ -15,6 +15,8 @@ main() {
 
   set_display_resolution 1920 1080
   set_keymap "hr"
+
+  install_nvim
 }
 
 set_display_resolution() {
@@ -82,6 +84,34 @@ keymap_exists() {
   local keymap=$1
 
   awk -v k="${keymap}" '$1 == k {found=1} END {exit !found}' /usr/share/X11/xkb/rules/xorg.lst
+}
+
+install_nvim() {
+  local version="nvim-linux-x86_64"
+  local tarball="${verrsion}.tar.gz"
+  local dl_dir="${HOME}/Downloads"
+  local url="https://github.com/neovim/neovim/releases/latest/download/${tarball}"
+  
+  log_info "Downloading neovim..."
+  if ! curl -Lo "${dl_dir}/${tarball}" "${url}"; then
+    log_warn "Download failed"
+    return
+  fi
+
+  log_info "Extracting to /opt/${version}..."
+  sudo rm -rf "/opt/${version}"
+  if ! sudo tar -C /opt -xzf "${dl_dir}/${tarball}"; then
+    log_warn "Extraction failed"
+    return
+  fi
+
+  log_info "Creating symlink /usr/bin/nvim..."
+  sudo ln -sf "/opt/${version}/bin/nvim" /usr/bin/nvim
+
+  log_info "Cleaning up tarball..."
+  rm "${dl_dir}/${tarball}"
+
+  log_info "Neovim installed successfully"
 }
 
 main "$@"
