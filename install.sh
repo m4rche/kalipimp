@@ -141,7 +141,7 @@ set_bg() {
 
   log_info "Copying to ${bg_d}..."
   cp "${TMP_D}/${artifact}" "${bg_d}/${artifact}"
-  
+
   log_info "Setting as background image..."
 
   # apply to all workspaces
@@ -170,8 +170,9 @@ set_bg() {
 
   log_info "Applying blur before setting as login screen background image..."
   convert "${bg_d}/${artifact}" -blur 0x8 "${bg_d}/blurred-${artifact}"
-  
-  sudo sed -i "s|^background\\s*=\\s*.*|background = ${bg_d}/blurred-${artifact}|" "${GREETER_CONF}"
+
+  sudo cp "${bg_d}/blurred-${artifact}" "/usr/share/backgrounds/blurred-${artifact}"
+  sudo sed -i "s|^background\\s*=\\s*.*|background = /usr/share/backgrounds/blurred-${artifact}|" "${GREETER_CONF}"
 
   log_info "Set background ${artifact}"
 }
@@ -203,6 +204,9 @@ set_font() {
   log_info "Setting ${font} as default font..."
   xfconf-query -c xsettings -p /Gtk/FontName -s "GohuFont 11 Nerd Font Medium 11"
   xfconf-query -c xsettings -p /Gtk/MonospaceFontName -s "GohuFont 11 Nerd Font Mono Medium 10"
+
+
+  sudo sed -i "s/^font-name\\s*=\\s*.*/font-name = GohuFont 11 Nerd Font Medium 11"
 
   log_info "${font} font installed successfully"
 }
