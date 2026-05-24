@@ -15,7 +15,7 @@ log_error() { echo -e "[$(date '+%H:%M:%S')] ${RED}[ERROR]${NC} $*"; }
 
 main() {
   if ! sudo -v; then
-    log_error "Must run as root"
+    log_error "Must run with sudo"
     return
   fi
   
@@ -32,6 +32,8 @@ main() {
   install_nvim
   install_kitty
   install_polybar
+
+  replicate_dotfiles
 }
 
 set_display_resolution() {
@@ -153,7 +155,7 @@ set_bg() {
   # style stretched (3)
   xfconf-query \
     -c xfce4-desktop \
-    -p /backdrop/screen0/monitorVirtual-1/workspace0/image-style\
+    -p /backdrop/screen0/monitorVirtual-1/workspace0/image-style \
     -s 3
 
   log_info "Set background ${artifact}"
@@ -185,7 +187,7 @@ set_font() {
   
   log_info "Setting ${font} as default font..."
   xfconf-query -c xsettings -p /Gtk/FontName -s "GohuFont 11 Nerd Font Medium 11"
-  xfconf-query -c xsettings -p /Gtk/FontName -s "GohuFont 11 Nerd Font Mono Medium 10"
+  xfconf-query -c xsettings -p /Gtk/MonospaceFontName -s "GohuFont 11 Nerd Font Mono Medium 10"
 
   log_info "${font} font installed successfully"
 }
@@ -250,6 +252,18 @@ install_polybar() {
   local artifact="polybar"
 
   sudo apt install -y "${artifact}"
+}
+
+dotfiles() {
+  git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME" $@
+}
+
+replicate_dotfiles() {
+  local url="git@github.com:m4rche/dotfiles.git"
+
+  git clone --branch kali --bare "${url}" "${HOME}/.dotfiles"
+  dotfiles config --local status.showUntrackedFiles no
+  dotfiles checkout -f
 }
 
 main "$@"
