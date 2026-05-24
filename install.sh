@@ -193,7 +193,7 @@ set_font() {
   fi
  
   log_info "Extracting to ${fonts_d}..."
-  if ! sudo unzip -o -d "${fonts_d}" "${TMP_D}/${artifact}"; then
+  if ! unzip -o -d "${fonts_d}" "${TMP_D}/${artifact}"; then
     log_warn "Extraction failed"
     return
   fi
@@ -206,7 +206,7 @@ set_font() {
   xfconf-query -c xsettings -p /Gtk/MonospaceFontName -s "GohuFont 11 Nerd Font Mono Medium 10"
 
   log_info "Extracting to /usr/share/fonts/truetype/${font}"
-  if ! unzip -o -d "/usr/share/fonts/truetype/${font}" "${TMP_D}/${artifact}"; then
+  if ! sudo unzip -o -d "/usr/share/fonts/truetype/${font}" "${TMP_D}/${artifact}"; then
     log_warn "Extraction failed"
     return
   fi
