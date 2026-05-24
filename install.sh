@@ -20,6 +20,7 @@ main() {
   set_keymap "hr"
   set_theme "Kali-Green-Dark"
   set_icons "Flat-Remix-Green-Dark"
+  set_bg
 
   install_font
   install_nvim
@@ -110,6 +111,35 @@ set_icons() {
 
   log_info "Set icons ${icons}"
 
+}
+
+set_bg() {
+  local artifact="green-kali-2025-2-3840x2160.png"
+  local url="https://www.kali.org/wallpapers/community/images/community/${artifact}"
+  local bg_d="${HOME}/.local/share/backgrounds"
+
+  mkdir -p "${bg_d}"
+
+  log_info "Downloading ${artifact} image..."
+  if ! curl -fLo "${TMP_D}/${artifact}" "${url}"; then
+    log_warn "Download failed"
+    return
+  fi
+
+  log_info "Copying to ${bg_d}..."
+  cp "${TMP_D}/${artifact}" "${bg_d}/${artifact}"
+  
+  log_info "Setting as background image..."
+  xfconf-query \
+    -c xfce4-desktop \
+    -p /backdrop/single-workspace-mode \
+    -s true
+  xfconf-query \
+    -c xfce4-desktop \
+    -p /backdrop/screen0/monitorVirtual-1/workspace0/last-image \
+    -s "${bd_d}/${artifact}"
+
+  log_info "Set background ${artifact}"
 }
 
 install_font() {
