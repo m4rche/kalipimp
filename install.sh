@@ -9,6 +9,8 @@ readonly BLUE=$(tput setaf 4)
 readonly TMP_D="$(mktemp -d)"
 trap "rm -rf '${TMP_D}'" EXIT
 
+readonly GREETER_CONF="/etc/ligthdm/lightdm-gtk-greeter.conf"
+
 log_info()  { echo -e "[$(date '+%H:%M:%S')] ${GREEN}[INFO]${NC} $*"; }
 log_warn()  { echo -e "[$(date '+%H:%M:%S')] ${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "[$(date '+%H:%M:%S')] ${RED}[ERROR]${NC} $*"; }
@@ -108,6 +110,7 @@ set_theme() {
 
   log_info "Setting theme ${theme}..."
   xfconf-query -c xsettings -p /Net/ThemeName -s "${theme}"
+  sudo sed -i 's/^theme-name\s*=\s*-*/theme-name = ${theme}/' "${GREETER_CONF}"
 
   log_info "Set theme ${theme}"
 }
@@ -117,6 +120,7 @@ set_icons() {
 
   log_info "Setting icons ${icons}..."
   xfconf-query -c xsettings -p /Net/IconThemeName -s "${icons}"
+  sudo sed -i 's/^icon-theme-name\s*=\s*-*/icon-theme-name = ${icons}/' "${GREETER_CONF}"
 
   log_info "Set icons ${icons}"
 
@@ -163,6 +167,11 @@ set_bg() {
       -p "${prop}" \
       -s 3
   done
+
+  log_info "Applying blur before setting as login screen background image..."
+  convert "${bg_d}/${artifact}" -blur 0x8 "${bg_d}/blurred-${artifact}"
+  
+  sudo sed -i "s|^background\\s*=\\s*.*|background = ${bg_d}/blurred-${artifact}|" "${GREETER_CONF}"
 
   log_info "Set background ${artifact}"
 }
