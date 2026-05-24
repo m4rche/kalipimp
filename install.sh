@@ -14,7 +14,10 @@ log_warn()  { echo -e "[$(date '+%H:%M:%S')] ${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "[$(date '+%H:%M:%S')] ${RED}[ERROR]${NC} $*"; }
 
 main() {
-  sudo -v 
+  if ! sudo -v; then
+    log_error "Must run as root"
+    return
+  fi
 
   set_display_resolution 1920 1080
   set_keymap "hr"
@@ -130,14 +133,24 @@ set_bg() {
   cp "${TMP_D}/${artifact}" "${bg_d}/${artifact}"
   
   log_info "Setting as background image..."
+
+  # apply to all workspaces
   xfconf-query \
     -c xfce4-desktop \
     -p /backdrop/single-workspace-mode \
     -s true
+
+  # set background
   xfconf-query \
     -c xfce4-desktop \
     -p /backdrop/screen0/monitorVirtual-1/workspace0/last-image \
     -s "${bg_d}/${artifact}"
+
+  # style stretched (3)
+  xfconf-query \
+    -c xfce4-desktop \
+    -p /backdrop/screen0/monitorVirtual-1/workspace0/image-style\
+    -s 3
 
   log_info "Set background ${artifact}"
 }
