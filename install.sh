@@ -110,7 +110,7 @@ set_theme() {
 
   log_info "Setting theme ${theme}..."
   xfconf-query -c xsettings -p /Net/ThemeName -s "${theme}"
-  sudo sed -i "s/^theme-name\\s*=\\s*-*/theme-name = ${theme}/" "${GREETER_CONF}"
+  sudo sed -i "s/^theme-name\\s*=\\s*.*/theme-name = ${theme}/" "${GREETER_CONF}"
 
   log_info "Set theme ${theme}"
 }
@@ -120,7 +120,7 @@ set_icons() {
 
   log_info "Setting icons ${icons}..."
   xfconf-query -c xsettings -p /Net/IconThemeName -s "${icons}"
-  sudo sed -i "s/^icon-theme-name\\s*=\\s*-*/icon-theme-name = ${icons}/" "${GREETER_CONF}"
+  sudo sed -i "s/^icon-theme-name\\s*=\\s*.*/icon-theme-name = ${icons}/" "${GREETER_CONF}"
 
   log_info "Set icons ${icons}"
 
