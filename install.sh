@@ -205,8 +205,17 @@ set_font() {
   xfconf-query -c xsettings -p /Gtk/FontName -s "GohuFont 11 Nerd Font Medium 11"
   xfconf-query -c xsettings -p /Gtk/MonospaceFontName -s "GohuFont 11 Nerd Font Mono Medium 10"
 
+  log_info "Extracting to /usr/share/fonts/truetype/${font}"
+  if ! unzip -o -d "/usr/share/fonts/truetype/${font}" "${TMP_D}/${artifact}"; then
+    log_warn "Extraction failed"
+    return
+  fi
 
-  sudo sed -i "s/^font-name\\s*=\\s*.*/font-name = GohuFont 11 Nerd Font Medium 11/"
+  log_info "Refreshing system font cache..."
+  sudo fc-cache -f 
+
+  log_info "Applying ${font} to LightDM GTK Greeter..."
+  sudo sed -i "s/^font-name\\s*=\\s*.*/font-name = GohuFont 11 Nerd Font Medium 11/" "${GREETER_CONF}
 
   log_info "${font} font installed successfully"
 }
