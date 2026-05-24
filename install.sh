@@ -30,6 +30,7 @@ main() {
   set_icons "Flat-Remix-Green-Dark"
   set_bg
   set_font
+	set_pfp
 
   install_nvim
   install_kitty
@@ -218,6 +219,24 @@ set_font() {
   sudo sed -i "s/^font-name\\s*=\\s*.*/font-name = GohuFont 11 Nerd Font Medium 11/" "${GREETER_CONF}"
 
   log_info "${font} font installed successfully"
+}
+
+set_pfp() {
+	local artifact="hacker.png"
+	local url="https://www.flaticon.com/download/icon/924915?icon_id=924915&author=257&team=257&keyword=Hacker&pack=924894&style=1&style_id=15&format=png&color=%23000000&colored=2&size=128&selection=1&type=standard&search=hacker"
+
+  log_info "Downloading pfp..."
+  if ! curl -fLo "${TMP_D}/${artifact}" "${url}"; then
+    log_warn "Download failed"
+    return
+  fi
+	
+	log_info "Copying to world-readable system path..."
+	sudo cp "${TMP_D}/${artifact}" "/usr/share/pixmaps/"
+	
+	sudo sed -i "s|^default-user-image\\s*=\\s*.*|default-user-image = /usr/share/pixmaps/${artifact}|" "${GREETER_CONF}"
+
+	log_info "Set pfp ${artifact}"
 }
 
 install_nvim() {
