@@ -18,16 +18,20 @@ main() {
     log_error "Must run as root"
     return
   fi
+  
+  log_info "Updating packages"
+  sudo apt update
 
   set_display_resolution 1920 1080
   set_keymap "hr"
   set_theme "Kali-Green-Dark"
   set_icons "Flat-Remix-Green-Dark"
   set_bg
+  set_font
 
-  install_font
   install_nvim
   install_kitty
+  install_polybar
 }
 
 set_display_resolution() {
@@ -155,7 +159,7 @@ set_bg() {
   log_info "Set background ${artifact}"
 }
 
-install_font() {
+set_font() {
   local font="Gohu"
   local artifact="${font}.zip"
   local version="v3.4.0"
@@ -240,6 +244,12 @@ install_kitty() {
   sudo sed -i 's/^TerminalEmulator=.*/TerminalEmulator=kitty/' /etc/xdg/xfce4/helpers.rc
 
   log_info "Kitty installed successfully"
+}
+
+install_polybar() {
+  local artifact="polybar"
+
+  sudo apt install -y "${artifact}"
 }
 
 main "$@"
