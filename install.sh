@@ -214,12 +214,14 @@ set_font() {
 set_pfp() {
   local artifact="pfp.png"
 
+	log_info "Setting pfp..."
+  cp "${STATIC_DIR}/${artifact}" "${HOME}/.face"
+
   log_info "Copying pfp to world-readable system path..."
   if ! sudo cp "${STATIC_DIR}/${artifact}" "/usr/share/pixmaps/${artifact}"; then
     log_warn "Copy failed"
     return
   fi
-
   sudo sed -i "s|^default-user-image\\s*=\\s*.*|default-user-image = /usr/share/pixmaps/${artifact}|" "${GREETER_CONF}"
 
   log_info "Set pfp ${artifact}"
