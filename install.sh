@@ -10,6 +10,8 @@ readonly TMP_D="$(mktemp -d)"
 trap "rm -rf '${TMP_D}'" EXIT
 
 readonly GREETER_CONF="/etc/lightdm/lightdm-gtk-greeter.conf"
+readonly REPO_ROOT="$(git rev-parse --show-toplevel)"
+readonly STATIC_DIR="${REPO_ROOT}/static"
 
 log_info()  { echo -e "[$(date '+%H:%M:%S')] ${GREEN}[INFO]${NC} $*"; }
 log_warn()  { echo -e "[$(date '+%H:%M:%S')] ${YELLOW}[WARN]${NC} $*"; }
@@ -30,7 +32,7 @@ main() {
   set_icons "Flat-Remix-Green-Dark"
   set_bg
   set_font
-	set_pfp
+  set_pfp
 
   install_nvim
   install_kitty
@@ -128,20 +130,16 @@ set_icons() {
 }
 
 set_bg() {
-  local artifact="green-kali-2025-2-3840x2160.png"
-  local url="https://www.kali.org/wallpapers/community/images/community/${artifact}"
+  local artifact="kali-green.png"
   local bg_d="${HOME}/.local/share/backgrounds"
 
   mkdir -p "${bg_d}"
 
-  log_info "Downloading ${artifact} image..."
-  if ! curl -fLo "${TMP_D}/${artifact}" "${url}"; then
-    log_warn "Download failed"
+  log_info "Copying ${artifact} to ${bg_d}..."
+  if ! cp "${STATIC_DIR}/${artifact}" "${bg_d}/${artifact}"; then
+    log_warn "Copy failed"
     return
   fi
-
-  log_info "Copying to ${bg_d}..."
-  cp "${TMP_D}/${artifact}" "${bg_d}/${artifact}"
 
   log_info "Setting as background image..."
 
@@ -180,21 +178,13 @@ set_bg() {
 
 set_font() {
   local font="Gohu"
-  local artifact="${font}.zip"
-  local version="v3.4.0"
-  local url="https://github.com/ryanoasis/nerd-fonts/releases/download/${version}/${artifact}"
+  local artifact="font.zip"
   local fonts_d="${HOME}/.local/share/fonts"
 
   mkdir -p "${fonts_d}"
 
-  log_info "Downloading ${font} font..."
-  if ! curl -fLo "${TMP_D}/${artifact}" "${url}"; then
-    log_warn "Download failed"
-    return
-  fi
- 
-  log_info "Extracting to ${fonts_d}..."
-  if ! unzip -o -d "${fonts_d}" "${TMP_D}/${artifact}"; then
+  log_info "Extracting ${font} to ${fonts_d}..."
+  if ! unzip -o -d "${fonts_d}" "${STATIC_DIR}/${artifact}"; then
     log_warn "Extraction failed"
     return
   fi
@@ -207,7 +197,7 @@ set_font() {
   xfconf-query -c xsettings -p /Gtk/MonospaceFontName -s "GohuFont 11 Nerd Font Mono Medium 10"
 
   log_info "Extracting to /usr/share/fonts/truetype/${font}"
-  if ! sudo unzip -o -d "/usr/share/fonts/truetype/${font}" "${TMP_D}/${artifact}"; then
+  if ! sudo unzip -o -d "/usr/share/fonts/truetype/${font}" "${STATIC_DIR}/${artifact}"; then
     log_warn "Extraction failed"
     return
   fi
@@ -222,21 +212,17 @@ set_font() {
 }
 
 set_pfp() {
-	local artifact="hacker.png"
-	local url="https://www.flaticon.com/download/icon/924915?icon_id=924915&author=257&team=257&keyword=Hacker&pack=924894&style=1&style_id=15&format=png&color=%23000000&colored=2&size=128&selection=1&type=standard&search=hacker"
+  local artifact="pfp.png"
 
-  log_info "Downloading pfp..."
-  if ! curl -fLo "${TMP_D}/${artifact}" "${url}"; then
-    log_warn "Download failed"
+  log_info "Copying pfp to world-readable system path..."
+  if ! sudo cp "${STATIC_DIR}/${artifact}" "/usr/share/pixmaps/${artifact}"; then
+    log_warn "Copy failed"
     return
   fi
-	
-	log_info "Copying to world-readable system path..."
-	sudo cp "${TMP_D}/${artifact}" "/usr/share/pixmaps/"
-	
-	sudo sed -i "s|^default-user-image\\s*=\\s*.*|default-user-image = /usr/share/pixmaps/${artifact}|" "${GREETER_CONF}"
 
-	log_info "Set pfp ${artifact}"
+  sudo sed -i "s|^default-user-image\\s*=\\s*.*|default-user-image = /usr/share/pixmaps/${artifact}|" "${GREETER_CONF}"
+
+  log_info "Set pfp ${artifact}"
 }
 
 install_nvim() {
