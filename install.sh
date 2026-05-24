@@ -215,7 +215,7 @@ set_font() {
   sudo fc-cache -f 
 
   log_info "Applying ${font} to LightDM GTK Greeter..."
-  sudo sed -i "s/^font-name\\s*=\\s*.*/font-name = GohuFont 11 Nerd Font Medium 11/" "${GREETER_CONF}
+  sudo sed -i "s/^font-name\\s*=\\s*.*/font-name = GohuFont 11 Nerd Font Medium 11/" "${GREETER_CONF}"
 
   log_info "${font} font installed successfully"
 }
