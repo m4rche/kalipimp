@@ -45,7 +45,7 @@ set_display_resolution() {
 
   log_info "Setting display resolution ${resolution}"
 
-  local screen=$(xrandr | sed -n 2p | awk '{printf $1}')
+  local screen=$(xrandr | grep ' connected' | awk '{printf $1}')
   log_info "Detected screen: ${screen}"
 
   if ! xrandr --output "$screen" --mode "${resolution}"; then
@@ -147,16 +147,22 @@ set_bg() {
     -s true
 
   # set background
-  xfconf-query \
-    -c xfce4-desktop \
-    -p /backdrop/screen0/monitorVirtual-1/workspace0/last-image \
-    -s "${bg_d}/${artifact}"
+  props=$(xfconf-query -c xfce4-desktop -l | grep 'last-image')
+  for prop in $props; do
+    xfconf-query \
+      -c xfce4-desktop \
+      -p "${prop}" \
+      -s "${bg_d}/${artifact}"
+  done
 
   # style stretched (3)
-  xfconf-query \
-    -c xfce4-desktop \
-    -p /backdrop/screen0/monitorVirtual-1/workspace0/image-style \
-    -s 3
+  local props=$(xfconf-query -c xfce4-desktop -l | grep 'image-style')
+  for prop in $props; do
+    xfconf-query \
+      -c xfce4-desktop \
+      -p "${prop}" \
+      -s 3
+  done
 
   log_info "Set background ${artifact}"
 }
