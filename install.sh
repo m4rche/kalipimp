@@ -9,7 +9,7 @@ readonly BLUE=$(tput setaf 4)
 readonly TMP_D="$(mktemp -d)"
 trap "rm -rf '${TMP_D}'" EXIT
 
-readonly GREETER_CONF="/etc/ligthdm/lightdm-gtk-greeter.conf"
+readonly GREETER_CONF="/etc/lightdm/lightdm-gtk-greeter.conf"
 
 log_info()  { echo -e "[$(date '+%H:%M:%S')] ${GREEN}[INFO]${NC} $*"; }
 log_warn()  { echo -e "[$(date '+%H:%M:%S')] ${YELLOW}[WARN]${NC} $*"; }
