@@ -206,7 +206,7 @@ set_font() {
   xfconf-query -c xsettings -p /Gtk/MonospaceFontName -s "GohuFont 11 Nerd Font Mono Medium 10"
 
 
-  sudo sed -i "s/^font-name\\s*=\\s*.*/font-name = GohuFont 11 Nerd Font Medium 11"
+  sudo sed -i "s/^font-name\\s*=\\s*.*/font-name = GohuFont 11 Nerd Font Medium 11/"
 
   log_info "${font} font installed successfully"
 }
