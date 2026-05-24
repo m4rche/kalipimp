@@ -137,7 +137,7 @@ set_bg() {
   xfconf-query \
     -c xfce4-desktop \
     -p /backdrop/screen0/monitorVirtual-1/workspace0/last-image \
-    -s "${bd_d}/${artifact}"
+    -s "${bg_d}/${artifact}"
 
   log_info "Set background ${artifact}"
 }
