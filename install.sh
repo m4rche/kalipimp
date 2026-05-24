@@ -301,4 +301,8 @@ replicate_dotfiles() {
   dotfiles checkout -f
 }
 
+# TODO:
+# - polybar conf
+# - grub conf
+
 main "$@"
