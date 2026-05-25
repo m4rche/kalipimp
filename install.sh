@@ -263,6 +263,12 @@ set_grub_theme() {
     echo "GRUB_THEME=\"${theme_dir}/theme.txt\"" | sudo tee -a "${grub_cfg}" > /dev/null
   fi
 
+  if grep -q '^GRUB_BACKGROUND' "${grub_cfg}"; then
+    sudo sed -i 's|^GRUB_BACKGROUND=.*|GRUB_BACKGROUND="/boot/grub/themes/darkmatter/background.png"|' "${grub_cfg}"
+  else
+    echo 'GRUB_BACKGROUND="/boot/grub/themes/darkmatter/background.png"' | sudo tee -a "${grub_cfg}" > /dev/null
+  fi
+
 	local override
 	override=$(grep -l 'GRUB_THEME' /etc/default/grub.d/*.cfg 2>/dev/null | head -1)
 	if [[ -n "${override}" ]]; then
