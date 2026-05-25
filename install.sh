@@ -37,6 +37,7 @@ main() {
   install_nvim
   install_kitty
   install_polybar
+  set_grub_theme
 
   replicate_dotfiles
 }
@@ -227,6 +228,41 @@ set_pfp() {
   log_info "Set pfp ${artifact}"
 }
 
+set_grub_theme() {
+  local artifact="darkmatter.zip"
+  local theme_dir="/boot/grub/themes/darkmatter"
+  local grub_cfg="/etc/default/grub"
+
+  log_infop "Setting grub theme..."
+
+  log_info "Extracting theme..."
+  if ! unzip -o -d "${theme_dir}" "${STATIC_DIR}/${artifact}"; then
+    log_warn "Extraction failed"
+    return
+  fi
+
+  log_info "Configuring GRUB..."
+  sudo sed -i 's/^GRUB_TERMINAL_OUTPUT/#GRUB_TERMINAL_OUTPUT/' "${grub_cfg}"
+  sudo sed -i 's/^GRUB_TIMEOUT_STYLE/#GRUB_TIMEOUT_STYLE/' "${grub_cfg}"
+
+  if grep -q '^GRUB_ENABLE_BLSCFG' "${grub_cfg}"; then
+    sudo sed -i 's/^GRUB_ENABLE_BLSCFG.*/GRUB_ENABLE_BLSCFG=false/' "${grub_cfg}"
+  else
+    echo 'GRUB_ENABLE_BLSCFG=false' | sudo tee -a "${grub_cfg}" > /dev/null
+  fi
+
+  if grep -q '^GRUB_THEME' "${grub_cfg}"; then
+    sudo sed -i "s|^GRUB_THEME.*|GRUB_THEME=\"${theme_dir}/theme.txt\"|" "${grub_cfg}"
+  else
+    echo "GRUB_THEME=\"${theme_dir}/theme.txt\"" | sudo tee -a "${grub_cfg}" > /dev/null
+  fi
+
+  log_info "Updating GRUB..."
+  sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+  log_info "Dark Matter GRUB Theme installed successfully"
+}
+
 install_nvim() {
   local artifact="nvim-linux-x86_64"
   local tarball="${artifact}.tar.gz"
@@ -300,9 +336,5 @@ replicate_dotfiles() {
   dotfiles config --local status.showUntrackedFiles no
   dotfiles checkout -f
 }
-
-# TODO:
-# - polybar conf
-# - grub conf
 
 main "$@"
