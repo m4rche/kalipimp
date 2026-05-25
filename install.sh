@@ -23,23 +23,23 @@ main() {
     return
   fi
   
-  log_info "Updating packages"
-  sudo apt update
-
-  set_display_resolution 1920 1080
-  set_keymap "hr"
-  set_theme "Kali-Green-Dark"
-  set_icons "Flat-Remix-Green-Dark"
-  set_bg
-  set_font
-  set_pfp
-
-  install_nvim
-  install_kitty
-  install_polybar
+#  log_info "Updating packages"
+#  sudo apt update
+#
+#  set_display_resolution 1920 1080
+#  set_keymap "hr"
+#  set_theme "Kali-Green-Dark"
+#  set_icons "Flat-Remix-Green-Dark"
+#  set_bg
+#  set_font
+#  set_pfp
   set_grub_theme
-
-  replicate_dotfiles
+#
+#  install_nvim
+#  install_kitty
+#  install_polybar
+#
+#  replicate_dotfiles
 }
 
 set_display_resolution() {
@@ -233,10 +233,10 @@ set_grub_theme() {
   local theme_dir="/boot/grub/themes/darkmatter"
   local grub_cfg="/etc/default/grub"
 
-  log_infop "Setting grub theme..."
+  log_info "Setting grub theme..."
 
   log_info "Extracting theme..."
-  if ! unzip -o -d "${theme_dir}" "${STATIC_DIR}/${artifact}"; then
+  if ! sudo unzip -o -d "${theme_dir}" "${STATIC_DIR}/${artifact}"; then
     log_warn "Extraction failed"
     return
   fi
@@ -252,10 +252,16 @@ set_grub_theme() {
   fi
 
   if grep -q '^GRUB_THEME' "${grub_cfg}"; then
-    sudo sed -i "s|^GRUB_THEME.*|GRUB_THEME=\"${theme_dir}/theme.txt\"|" "${grub_cfg}"
+    sudo sed -i "s|^GRUB_THEME=.*|GRUB_THEME=\"${theme_dir}/theme.txt\"|" "${grub_cfg}"
   else
     echo "GRUB_THEME=\"${theme_dir}/theme.txt\"" | sudo tee -a "${grub_cfg}" > /dev/null
   fi
+
+	local override
+	override=$(grep -l 'GRUB_THEME' /etc/default/grub.d/*.cfg 2>/dev/null | head -1)
+	if [[ -n "${override}" ]]; then
+		sudo rm "${override}"
+	fi
 
   log_info "Updating GRUB..."
   sudo grub-mkconfig -o /boot/grub/grub.cfg
