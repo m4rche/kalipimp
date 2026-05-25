@@ -23,24 +23,24 @@ main() {
     return
   fi
   
-#  log_info "Updating packages"
-#  sudo apt update
-#
-#  set_display_resolution 1920 1080
-#  set_keymap "hr"
-#  set_theme "Kali-Green-Dark"
-#  set_icons "Flat-Remix-Green-Dark"
-#  set_bg
-#  set_font
-#  set_pfp
-#  set_grub_theme
-	 set_plymouth_theme
-#
-#  install_nvim
-#  install_kitty
-#  install_polybar
-#
-#  replicate_dotfiles
+  log_info "Updating packages"
+  sudo apt update
+
+  set_display_resolution 1920 1080
+  set_keymap "hr"
+  set_theme "Kali-Green-Dark"
+  set_icons "Flat-Remix-Green-Dark"
+  set_bg
+  set_font
+  set_pfp
+  set_grub_theme
+	set_plymouth_theme
+
+  install_nvim
+  install_kitty
+  install_polybar
+
+  replicate_dotfiles
 }
 
 set_display_resolution() {
