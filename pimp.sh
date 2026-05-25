@@ -39,6 +39,7 @@ main() {
   install_nvim
   install_kitty
   install_polybar
+	install_rofi
 
   replicate_dotfiles
 }
@@ -360,6 +361,13 @@ install_polybar() {
   local artifact="polybar"
 
   sudo apt install -y "${artifact}"
+}
+
+install_rofi() {
+	local artifact="rofi"
+
+	sudo apt install -y "${artifact}"
+	xfconf-query -c xfce4-keyboard-shortcuts -np '/commands/custom/<Shift>space' -t string -s 'rofi -show drun'
 }
 
 dotfiles() {
