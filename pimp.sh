@@ -34,12 +34,12 @@ main() {
   set_font
   set_pfp
   set_grub_theme
-	set_plymouth_theme
+  set_plymouth_theme
 
   install_nvim
   install_kitty
   install_polybar
-	install_rofi
+  install_rofi
 
   replicate_dotfiles
 }
