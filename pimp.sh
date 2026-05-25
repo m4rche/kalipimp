@@ -115,6 +115,7 @@ set_theme() {
 
   log_info "Setting theme ${theme}..."
   xfconf-query -c xsettings -p /Net/ThemeName -s "${theme}"
+	xfconf-query -c xfwm4 -p /general/theme -s "${theme}"
   sudo sed -i "s/^theme-name\\s*=\\s*.*/theme-name = ${theme}/" "${GREETER_CONF}"
 
   log_info "Set theme ${theme}"
@@ -289,7 +290,7 @@ set_plymouth_theme() {
 	log_info "Setting plymouth theme..."
 
 	log_info "Extracting theme..."
-	if ! sudo unzip -d "${theme_dir}/owl" "${STATIC_DIR}/${artifact}"; then
+	if ! sudo unzip -o -d "${theme_dir}/owl" "${STATIC_DIR}/${artifact}"; then
 		log_warn "Extraction failed"
 		return
 	fi
