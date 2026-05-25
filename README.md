@@ -2,6 +2,8 @@
 
 Pimp the shit out of Kali with `pimp.sh`
 
+Run `bash pimp.sh`
+
 Credit:
 
 - Gohu Font: [hchargois/gohufont](https://github.com/hchargois/gohufont)
