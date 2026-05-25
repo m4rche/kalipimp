@@ -366,7 +366,7 @@ dotfiles() {
 }
 
 replicate_dotfiles() {
-  local url="git@github.com:m4rche/dotfiles.git"
+  local url="https://github.com/m4rche/dotfiles.git"
 
   git clone --branch kali --bare "${url}" "${HOME}/.dotfiles"
   dotfiles config --local status.showUntrackedFiles no
