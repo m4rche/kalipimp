@@ -33,7 +33,8 @@ main() {
 #  set_bg
 #  set_font
 #  set_pfp
-  set_grub_theme
+#  set_grub_theme
+	 set_plymouth_theme
 #
 #  install_nvim
 #  install_kitty
@@ -279,6 +280,23 @@ set_grub_theme() {
   sudo grub-mkconfig -o /boot/grub/grub.cfg
 
   log_info "Dark Matter GRUB Theme installed successfully"
+}
+
+set_plymouth_theme() {
+	local artifact="owl.zip"
+	local theme_dir="/usr/share/plymouth/themes"
+
+	log_info "Setting plymouth theme..."
+
+	log_info "Extracting theme..."
+	if ! sudo unzip -d "${theme_dir}/owl" "${STATIC_DIR}/${artifact}"; then
+		log_warn "Extraction failed"
+		return
+	fi
+
+	sudo plymouth-set-default-theme -R owl
+
+	log_info "Plymouth theme set"
 }
 
 install_nvim() {
