@@ -245,6 +245,12 @@ set_grub_theme() {
   sudo sed -i 's/^GRUB_TERMINAL_OUTPUT/#GRUB_TERMINAL_OUTPUT/' "${grub_cfg}"
   sudo sed -i 's/^GRUB_TIMEOUT_STYLE/#GRUB_TIMEOUT_STYLE/' "${grub_cfg}"
 
+  if grep -q '^GRUB_GFXMODE' "${grub_cfg}"; then
+    sudo sed -i 's/^GRUB_GFXMODE.*/GRUB_GFXMODE=1920x1080/' "${grub_cfg}"
+  else
+    echo 'GRUB_GFXMODE=1920x1080' | sudo tee -a "${grub_cfg}" > /dev/null
+  fi
+
   if grep -q '^GRUB_ENABLE_BLSCFG' "${grub_cfg}"; then
     sudo sed -i 's/^GRUB_ENABLE_BLSCFG.*/GRUB_ENABLE_BLSCFG=false/' "${grub_cfg}"
   else
