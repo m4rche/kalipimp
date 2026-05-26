@@ -6,24 +6,24 @@ Run `bash pimp.sh`
 
 ## Screenshots
 
-*Grub*:
+**Grub**:
 
 ![grub](screenshots/grub.png)
 
-*Plymouth*:
+**Plymouth**:
 
 ![plymouth](screenshots/plymouth.png)
 
 
-*Login*:
+**Login**:
 
 ![login](screenshots/login.png)
 
-*Desktop*:
+**Desktop**:
 
 ![desktop](screenshots/desktop.png)
 
-*Terminal*:
+**Terminal**:
 
 ![kitty](screenshots/kitty.png)
 
